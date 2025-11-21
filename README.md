@@ -22,7 +22,7 @@
 
 | 默认样式 | 空数据状态 |
 |:----:|:---:|
-| <img src="G:\Android_Project\my_github\yjzaddressselector\选取完成.png" style="zoom:25%;" /> | <img src="G:\Android_Project\my_github\yjzaddressselector\空数据.png" style="zoom:25%;" /> |
+| <img src="https://github.com/yjz0221/YjzSimpleAddressSelector/blob/main/%E9%80%89%E5%8F%96%E5%AE%8C%E6%88%90.png" style="zoom:25%;" /> | <img src="https://github.com/yjz0221/YjzSimpleAddressSelector/blob/main/%E7%A9%BA%E6%95%B0%E6%8D%AE.png" style="zoom:25%;" /> |
 
 
 
@@ -48,8 +48,7 @@ allprojects {
 
    ```groovy
    dependencies {
-       implementation 'com.github.你的Github用户名:仓库名:版本号'
-       // 例如: implementation 'com.github.User:AddressSelector:1.0.0'
+      implementation 'com.github.yjz0221:YjzSimpleAddressSelector:1.0.0'
    }
    ```
 
