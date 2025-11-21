@@ -43,14 +43,13 @@ allprojects {
 ```
 
 
-
 2. 在 Module 的 `build.gradle` 中添加依赖：
 
-   ```groovy
+```groovy
    dependencies {
       implementation 'com.github.yjz0221:YjzSimpleAddressSelector:1.0.0'
    }
-   ```
+```
 
 
 
