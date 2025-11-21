@@ -1,0 +1,71 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:layout_width="wrap_content"
+    android:layout_height="wrap_content"
+    android:background="@drawable/shape_yjz_address_background"
+    android:orientation="vertical">
+
+    <TextView
+        android:id="@+id/lib_tv_title"
+        android:layout_width="match_parent"
+        android:layout_height="50dp"
+        android:gravity="center"
+        android:text="所在地区"
+        android:textColor="#000000"
+        android:textSize="16sp"
+        android:textStyle="bold" />
+
+    <View
+        android:layout_width="match_parent"
+        android:layout_height="1dp"
+        android:background="#EEEEEE" />
+
+    <com.google.android.material.tabs.TabLayout
+        android:id="@+id/lib_tab_layout"
+        android:layout_width="match_parent"
+        android:layout_height="@dimen/address_tab_height"
+        android:background="@null"
+        app:tabMode="scrollable"
+        app:tabGravity="start"
+        app:contentInsetStart="0dp"
+        app:tabIndicatorFullWidth="false"
+        app:tabIndicatorColor="#4CAF50"
+        app:tabSelectedTextColor="#4CAF50"
+        app:tabTextColor="#666666"/>
+
+    <View
+        android:layout_width="match_parent"
+        android:layout_height="1dp"
+        android:background="#EEEEEE" />
+
+    <FrameLayout
+        android:layout_width="match_parent"
+        android:layout_height="0dp"
+        android:layout_weight="1">
+
+        <androidx.recyclerview.widget.RecyclerView
+            android:id="@+id/lib_recycler_view"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:alpha="1.0"/>
+
+        <TextView
+            android:id="@+id/lib_tv_empty"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center"
+            android:text="暂无下级数据"
+            android:textColor="#999999"
+            android:visibility="gone" />
+
+        <ProgressBar
+            android:id="@+id/lib_progress_bar"
+            android:layout_width="@dimen/address_progress_width"
+            android:layout_height="@dimen/address_progress_height"
+            android:layout_gravity="center"
+            android:visibility="gone"/>
+
+    </FrameLayout>
+
+</LinearLayout>
