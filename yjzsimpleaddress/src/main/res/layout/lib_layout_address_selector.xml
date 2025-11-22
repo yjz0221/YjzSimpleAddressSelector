@@ -4,6 +4,8 @@
     android:layout_width="wrap_content"
     android:layout_height="wrap_content"
     android:background="@drawable/shape_yjz_address_background"
+    android:focusable="true"
+    android:focusableInTouchMode="true"
     android:orientation="vertical">
 
     <TextView
@@ -16,6 +18,46 @@
         android:textSize="16sp"
         android:textStyle="bold" />
 
+    <FrameLayout
+        android:id="@+id/lib_fl_search_container"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:background="#FFFFFF"
+        android:padding="10dp"
+        android:visibility="gone">
+
+
+        <EditText
+            android:id="@+id/lib_et_search"
+            android:layout_width="match_parent"
+            android:layout_height="36dp"
+            android:background="@drawable/shape_address_search_bg"
+            android:hint="@string/address_search_hint"
+            android:imeOptions="actionDone"
+            android:paddingStart="50dp"
+            android:paddingEnd="10dp"
+            android:singleLine="true"
+            android:textColor="#333333"
+            android:textColorHint="#B4B2B2"
+            android:textCursorDrawable="@null"
+            android:textSize="14sp" />
+
+        <ImageView
+            android:id="@+id/iv_search"
+            android:layout_width="17dp"
+            android:layout_height="17dp"
+            android:layout_gravity="center_vertical"
+            android:layout_marginStart="24dp"
+            android:contentDescription="@null"
+            android:scaleType="centerInside"
+            android:src="@drawable/ic_search"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent" />
+
+    </FrameLayout>
+
+
     <View
         android:layout_width="match_parent"
         android:layout_height="1dp"
@@ -26,18 +68,19 @@
         android:layout_width="match_parent"
         android:layout_height="@dimen/address_tab_height"
         android:background="@null"
-        app:tabMode="scrollable"
-        app:tabGravity="start"
         app:contentInsetStart="0dp"
-        app:tabIndicatorFullWidth="false"
+        app:tabGravity="start"
         app:tabIndicatorColor="#4CAF50"
+        app:tabIndicatorFullWidth="false"
+        app:tabMode="scrollable"
         app:tabSelectedTextColor="#4CAF50"
-        app:tabTextColor="#666666"/>
+        app:tabTextColor="#666666" />
 
     <View
         android:layout_width="match_parent"
         android:layout_height="1dp"
         android:background="#EEEEEE" />
+
 
     <FrameLayout
         android:layout_width="match_parent"
@@ -48,7 +91,7 @@
             android:id="@+id/lib_recycler_view"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
-            android:alpha="1.0"/>
+            android:alpha="1.0" />
 
         <TextView
             android:id="@+id/lib_tv_empty"
@@ -64,7 +107,7 @@
             android:layout_width="@dimen/address_progress_width"
             android:layout_height="@dimen/address_progress_height"
             android:layout_gravity="center"
-            android:visibility="gone"/>
+            android:visibility="gone" />
 
     </FrameLayout>
 

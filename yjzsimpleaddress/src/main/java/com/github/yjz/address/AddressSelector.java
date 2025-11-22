@@ -14,6 +14,8 @@ import android.view.Display;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.view.inputmethod.InputMethodManager;
+import android.widget.EditText;
 import android.widget.ProgressBar;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -47,6 +49,8 @@ public class AddressSelector extends BottomSheetDialogFragment {
     private ProgressBar progressBar;
     private TextView tvTitle;
     private TextView tvEmpty;
+    private EditText etSearch;
+    private View searchContainer;
 
     private AddressProvider provider;
     private OnAddressSelectedListener listener;
@@ -55,6 +59,8 @@ public class AddressSelector extends BottomSheetDialogFragment {
 
     private List<AddressItem> selectedPath = new ArrayList<>();
     private List<AddressItem> currentList = new ArrayList<>();
+    // 保存当前层级的完整数据源 (用于搜索过滤)
+    private List<AddressItem> sourceList = new ArrayList<>();
 
     private int maxLevel = 4;
 
@@ -62,6 +68,7 @@ public class AddressSelector extends BottomSheetDialogFragment {
     private String titleText = "所在地区";
     private String tabHintText = "请选择";
     private String emptyText = "暂无下级数据";
+    private boolean isSearchOpen = false; // 是否开启搜索
 
     // --- 自定义尺寸配置  ---
     private int customWidth = 0;
@@ -97,6 +104,14 @@ public class AddressSelector extends BottomSheetDialogFragment {
      */
     public AddressSelector setTitle(String title) {
         this.titleText = title;
+        return this;
+    }
+
+    /**
+     * 是否开启搜索功能
+     */
+    public AddressSelector setSearchOpen(boolean open) {
+        this.isSearchOpen = open;
         return this;
     }
 
@@ -206,9 +221,28 @@ public class AddressSelector extends BottomSheetDialogFragment {
         progressBar = view.findViewById(R.id.lib_progress_bar);
         tvTitle = view.findViewById(R.id.lib_tv_title);
         tvEmpty = view.findViewById(R.id.lib_tv_empty);
+        searchContainer = view.findViewById(R.id.lib_fl_search_container);
+        etSearch = view.findViewById(R.id.lib_et_search);
+
 
         // 1. 应用自定义标题
         tvTitle.setText(titleText);
+
+        // 根据配置显示/隐藏搜索框
+        searchContainer.setVisibility(isSearchOpen ? View.VISIBLE : View.GONE);
+        // 监听输入框变化
+        etSearch.addTextChangedListener(new android.text.TextWatcher() {
+            @Override
+            public void beforeTextChanged(CharSequence s, int start, int count, int after) {}
+
+            @Override
+            public void onTextChanged(CharSequence s, int start, int before, int count) {
+                filterList(s.toString());
+            }
+
+            @Override
+            public void afterTextChanged(android.text.Editable s) {}
+        });
 
         // 2. 应用自定义颜色到 TabLayout
         tabLayout.setSelectedTabIndicatorColor(selectedColor);
@@ -258,6 +292,11 @@ public class AddressSelector extends BottomSheetDialogFragment {
 
         if (dialog.getWindow() != null) {
             dialog.getWindow().setBackgroundDrawable(new ColorDrawable(Color.TRANSPARENT));
+            // 强制让软键盘默认不弹起
+            dialog.getWindow().setSoftInputMode(
+                    android.view.WindowManager.LayoutParams.SOFT_INPUT_STATE_HIDDEN |
+                            android.view.WindowManager.LayoutParams.SOFT_INPUT_ADJUST_PAN
+            );
         }
 
         dialog.setOnShowListener(dialogInterface -> {
@@ -316,6 +355,32 @@ public class AddressSelector extends BottomSheetDialogFragment {
     }
 
     /**
+     * 搜索过滤逻辑
+     */
+    private void filterList(String keyword) {
+        if (sourceList == null || sourceList.isEmpty()) {
+            return;
+        }
+
+        currentList.clear();
+
+        if (android.text.TextUtils.isEmpty(keyword)) {
+            // 关键字为空，显示所有数据
+            currentList.addAll(sourceList);
+        } else {
+            // 关键字不为空，遍历查找
+            for (AddressItem item : sourceList) {
+                if (item.name != null && item.name.contains(keyword)) {
+                    currentList.add(item);
+                }
+            }
+        }
+        // 刷新列表
+        adapter.notifyDataSetChanged();
+    }
+
+
+    /**
      * 兼容低版本的 ProgressBar 颜色设置方法
      */
     private void updateProgressColor() {
@@ -339,6 +404,13 @@ public class AddressSelector extends BottomSheetDialogFragment {
         }
         setLoading(true);
 
+        // 切换层级时，必须清空搜索框，否则会带着上一次的搜索词去搜新数据
+        if (etSearch != null) {
+            // 临时移除监听器防止触发 filterList 导致 crash 或逻辑错误
+            // 这里简单处理：直接设为空字符串，filterList 会自动还原 currentList
+            etSearch.setText("");
+        }
+
         provider.provideData(parent, new AddressProvider.DataCallback() {
             @Override
             public void onSuccess(List<AddressItem> data) {
@@ -347,7 +419,10 @@ public class AddressSelector extends BottomSheetDialogFragment {
                 }
                 setLoading(false);
 
-                currentList = (data == null) ? new ArrayList<>() : data;
+                //  保存原始数据到 sourceList
+                sourceList = (data == null) ? new ArrayList<>() : data;
+                // 初始化显示数据 (深拷贝一份，或者直接 addAll)
+                currentList = new ArrayList<>(sourceList);
                 adapter.notifyDataSetChanged();
 
                 if (currentList.isEmpty()) {
@@ -399,6 +474,16 @@ public class AddressSelector extends BottomSheetDialogFragment {
                 tabLayout.removeTabAt(i);
             }
         }
+
+        // 选中某项后，关闭软键盘
+        if (isSearchOpen && etSearch != null) {
+            InputMethodManager imm = (InputMethodManager) requireContext().getSystemService(Context.INPUT_METHOD_SERVICE);
+            if (imm != null) {
+                imm.hideSoftInputFromWindow(etSearch.getWindowToken(), 0);
+            }
+            etSearch.clearFocus(); // 失去焦点
+        }
+
 
         updateCurrentTab(item.name);
         selectedPath.add(item);

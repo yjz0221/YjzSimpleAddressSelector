@@ -68,6 +68,7 @@ public class MainActivity extends AppCompatActivity {
 //                .setSelectedColor(Color.BLUE)     // 设置选中颜色（Tab下划线、文字高亮）
 //                .setUnSelectedColor(Color.GRAY)   // 设置未选中文字颜色
 //                .setProgressBarColor(Color.BLACK) // 单独设置Loading颜色（不设则跟随选中色）
+                .setSearchOpen(true)    // 显示搜索控件
                 .setMaxLevel(4)                   // 联动级数，设置只选到省市区/县街道
                 .show(getSupportFragmentManager());
     }

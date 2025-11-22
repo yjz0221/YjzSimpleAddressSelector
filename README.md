@@ -1,4 +1,4 @@
-# YjzSimpleAddress 简单地址选择库
+# 省市县区地址选择UI库
 
 [![License](https://img.shields.io/badge/License-Apache%202.0-blue.svg)](https://opensource.org/licenses/Apache-2.0)
 [![Platform](https://img.shields.io/badge/platform-Android-green.svg)](https://developer.android.com)
@@ -20,9 +20,9 @@
 
 ## 📸 截图示例
 
-| 默认样式 | 空数据状态 |
-|:----:|:---:|
-| <img src="https://github.com/yjz0221/YjzSimpleAddressSelector/blob/main/%E9%80%89%E5%8F%96%E5%AE%8C%E6%88%90.png" style="zoom:25%;" /> | <img src="https://github.com/yjz0221/YjzSimpleAddressSelector/blob/main/%E7%A9%BA%E6%95%B0%E6%8D%AE.png" style="zoom:25%;" /> |
+| 默认样式 | 空数据状态 | 搜索状态 |
+|:----:|:---:|:---:|
+| <img src="https://github.com/yjz0221/YjzSimpleAddressSelector/blob/main/%E9%80%89%E5%8F%96%E5%AE%8C%E6%88%90.png" style="zoom:25%;" /> | <img src="https://github.com/yjz0221/YjzSimpleAddressSelector/blob/main/%E7%A9%BA%E6%95%B0%E6%8D%AE.png" style="zoom:25%;" /> | <img src="G:\Android_Project\my_github\remote\YjzSimpleAddressSelector\搜索.png" style="zoom:25%;" /> |
 
 
 
@@ -138,6 +138,7 @@ AddressSelector.newInstance(provider, listener)
     .setHeight(ViewGroup.LayoutParams.WRAP_CONTENT)  // 设置弹窗高度
     // --- 交互设置 ---
     .setCanceledOnTouchOutside(true)  // 点击外部是否关闭
+    .setSearchOpen(true)    // 显示搜索控件
     .show(getSupportFragmentManager());
 ```
 
