@@ -334,22 +334,29 @@ public class AddressSelector extends BottomSheetDialogFragment {
     }
 
     private void loadData(AddressItem parent) {
-        if (provider == null) return;
+        if (provider == null) {
+            return;
+        }
         setLoading(true);
 
         provider.provideData(parent, new AddressProvider.DataCallback() {
             @Override
             public void onSuccess(List<AddressItem> data) {
-                if (!isAdded()) return;
+                if (!isAdded()) {
+                    return;
+                }
                 setLoading(false);
 
                 currentList = (data == null) ? new ArrayList<>() : data;
                 adapter.notifyDataSetChanged();
 
                 if (currentList.isEmpty()) {
+                    // 数据加载成功，但是为空
                     recyclerView.setVisibility(View.GONE);
                     tvEmpty.setVisibility(View.VISIBLE);
+                    tvEmpty.setText(emptyText);
                 } else {
+                    // 有数据
                     tvEmpty.setVisibility(View.GONE);
                     recyclerView.setVisibility(View.VISIBLE);
 
@@ -366,7 +373,11 @@ public class AddressSelector extends BottomSheetDialogFragment {
             public void onFailure(String errorMsg) {
                 if (!isAdded()) return;
                 setLoading(false);
-                Toast.makeText(getContext(), errorMsg, Toast.LENGTH_SHORT).show();
+
+                // ---错误信息不再 Toast，而是显示在空布局上 ---
+                recyclerView.setVisibility(View.GONE);
+                tvEmpty.setVisibility(View.VISIBLE);
+                tvEmpty.setText(errorMsg);
             }
         });
     }
