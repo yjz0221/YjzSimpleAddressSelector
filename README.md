@@ -22,7 +22,7 @@
 
 | 默认样式 | 空数据状态 | 搜索状态 |
 |:----:|:---:|:---:|
-| <img src="https://github.com/yjz0221/YjzSimpleAddressSelector/blob/main/%E9%80%89%E5%8F%96%E5%AE%8C%E6%88%90.png" style="zoom:25%;" /> | <img src="https://github.com/yjz0221/YjzSimpleAddressSelector/blob/main/%E7%A9%BA%E6%95%B0%E6%8D%AE.png" style="zoom:25%;" /> | <img src="G:\Android_Project\my_github\remote\YjzSimpleAddressSelector\搜索.png" style="zoom:25%;" /> |
+| <img src="https://github.com/yjz0221/YjzSimpleAddressSelector/blob/main/%E9%80%89%E5%8F%96%E5%AE%8C%E6%88%90.png" style="zoom:25%;" /> | <img src="https://github.com/yjz0221/YjzSimpleAddressSelector/blob/main/%E7%A9%BA%E6%95%B0%E6%8D%AE.png" style="zoom:25%;" /> | <img src="https://github.com/yjz0221/YjzSimpleAddressSelector/blob/main/%E6%90%9C%E7%B4%A2.png" style="zoom:25%;" /> |
 
 
 
