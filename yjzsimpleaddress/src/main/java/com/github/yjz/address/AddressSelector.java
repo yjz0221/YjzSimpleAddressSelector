@@ -69,6 +69,9 @@ public class AddressSelector extends BottomSheetDialogFragment {
     private String tabHintText = "请选择";
     private String emptyText = "暂无下级数据";
     private boolean isSearchOpen = false; // 是否开启搜索
+    // 默认选中的路径 (用于回显)
+    private List<AddressItem> defaultPath;
+
 
     // --- 自定义尺寸配置  ---
     private int customWidth = 0;
@@ -112,6 +115,15 @@ public class AddressSelector extends BottomSheetDialogFragment {
      */
     public AddressSelector setSearchOpen(boolean open) {
         this.isSearchOpen = open;
+        return this;
+    }
+
+    /**
+     * 设置默认选中的地址路径 (用于回显)
+     * 注意：列表中的 AddressItem 必须包含 name 和 code，且顺序必须是 省->市->区...
+     */
+    public AddressSelector setDefaultSelection(List<AddressItem> path) {
+        this.defaultPath = path;
         return this;
     }
 
@@ -258,8 +270,64 @@ public class AddressSelector extends BottomSheetDialogFragment {
         adapter = new InternalAdapter();
         recyclerView.setAdapter(adapter);
 
-        addTab(tabHintText);
-        loadData(null);
+        // 判断是否有默认数据
+        if (defaultPath != null && !defaultPath.isEmpty()) {
+
+            // 如果 maxLevel 为 0，直接显示提示，不进行后续的数据加载
+            if (maxLevel <= 0) {
+                tvEmpty.setVisibility(View.VISIBLE);
+                tvEmpty.setText(getString(R.string.address_max_level_error, maxLevel));
+                return;
+            }
+
+
+            // 1. 根据 maxLevel (数量) 截取数据
+            // 语义明确：maxLevel 为 3，就最多只取前 3 个默认数据
+            int targetSize = Math.min(defaultPath.size(), maxLevel);
+            for (int i = 0; i < targetSize; i++) {
+                this.selectedPath.add(defaultPath.get(i));
+            }
+
+            // 2. 恢复 Tab 显示
+            for (AddressItem item : this.selectedPath) {
+                addTab(item.name);
+            }
+
+            // 3. 决定下一步加载什么数据
+            // 如果当前选中的数量还没达到 maxLevel (数量)，说明还可以继续选下一级
+            if (this.selectedPath.size() < maxLevel) {
+                // 场景 A: 还没选满 (例如 maxLevel=3, 但只传了 2 个默认数据)
+                // 动作: 加一个 "请选择" Tab，并加载下一级
+                addTab(tabHintText);
+                loadData(this.selectedPath.get(this.selectedPath.size() - 1));
+            } else {
+                // 场景 B: 已经选满了 (selectedPath.size() == maxLevel)
+                // 动作: 停留在最后一级，加载该级对应的列表，以便用户修改当前级
+                // 逻辑：要加载第 N 级的数据，需要传入第 N-1 级的对象作为 parent
+                AddressItem parent = null;
+                if (this.selectedPath.size() > 1) {
+                    // 比如有 [省, 市]，size=2。要加载“市”列表，parent 应该是“省”(index 0)
+                    // index = size - 2
+                    parent = this.selectedPath.get(this.selectedPath.size() - 2);
+                } else {
+                    // 比如只有 [省]，size=1。要加载“省”列表，parent 是 null
+                    parent = null;
+                }
+                loadData(parent);
+            }
+        } else {
+            // --- 无默认数据的情况 ---
+            // 只有当允许显示的层级大于 0 时才加载
+            if (maxLevel > 0) {
+                addTab(tabHintText);
+                loadData(null);
+            } else {
+                // maxLevel 为 0，理论上不显示任何数据
+                // 可以显示个空提示，或者干脆什么都不做
+                tvEmpty.setVisibility(View.VISIBLE);
+                tvEmpty.setText(getString(R.string.address_max_level_error,maxLevel));
+            }
+        }
 
         tabLayout.addOnTabSelectedListener(new TabLayout.OnTabSelectedListener() {
             @Override
@@ -459,6 +527,22 @@ public class AddressSelector extends BottomSheetDialogFragment {
 
     private void onListItemClick(AddressItem item) {
         int currentTabPos = tabLayout.getSelectedTabPosition();
+
+        // 防止 maxLevel=0 或 Tab 初始化失败时，点击列表导致数组越界
+        if (currentTabPos != -1 && currentTabPos < selectedPath.size()) {
+            AddressItem oldItem = selectedPath.get(currentTabPos);
+            if (oldItem.code.equals(item.code)) {
+                if (currentTabPos + 1 < tabLayout.getTabCount()) {
+                    tabLayout.getTabAt(currentTabPos + 1).select();
+                }
+                return;
+            }
+            selectedPath.subList(currentTabPos, selectedPath.size()).clear();
+            int tabCount = tabLayout.getTabCount();
+            for (int i = tabCount - 1; i > currentTabPos; i--) {
+                tabLayout.removeTabAt(i);
+            }
+        }
 
         if (currentTabPos < selectedPath.size()) {
             AddressItem oldItem = selectedPath.get(currentTabPos);

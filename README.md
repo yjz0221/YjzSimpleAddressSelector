@@ -123,6 +123,12 @@ AddressSelector.newInstance(new MyAddressProvider(), new OnAddressSelectedListen
 该库支持链式调用，满足 UI 需求。
 
 ```java
+// 构造默认选中数据
+List<AddressItem> history = new ArrayList<>();
+        history.add(new AddressItem("浙江省", "330000"));
+        history.add(new AddressItem("杭州市", "330100"));
+        history.add(new AddressItem("西湖区", "330106"));
+        
 AddressSelector.newInstance(provider, listener)
     // --- 基础设置 ---
     .setTitle("请选择收货地址")          // 设置标题
@@ -139,6 +145,7 @@ AddressSelector.newInstance(provider, listener)
     // --- 交互设置 ---
     .setCanceledOnTouchOutside(true)  // 点击外部是否关闭
     .setSearchOpen(true)    // 显示搜索控件
+    .setDefaultSelection(history) // 传入默认数据
     .show(getSupportFragmentManager());
 ```
 

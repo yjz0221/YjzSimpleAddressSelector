@@ -12,6 +12,7 @@ import com.github.yjz.address.AddressSelector;
 import com.github.yjz.address.listener.OnAddressSelectedListener;
 import com.github.yjz.address.model.AddressItem;
 
+import java.util.ArrayList;
 import java.util.List;
 
 @SuppressLint("MissingInflatedId")
@@ -33,6 +34,12 @@ public class MainActivity extends AppCompatActivity {
 
 
     public void showPicker() {
+        // 构造默认选中数据
+        List<AddressItem> history = new ArrayList<>();
+        history.add(new AddressItem("浙江省", "330000"));
+        history.add(new AddressItem("杭州市", "330100"));
+        history.add(new AddressItem("西湖区", "330106"));
+
         AddressSelector.newInstance(
                         new MyAddressProvider(), // 注入你的数据逻辑
                         new OnAddressSelectedListener() {
@@ -70,6 +77,7 @@ public class MainActivity extends AppCompatActivity {
 //                .setProgressBarColor(Color.BLACK) // 单独设置Loading颜色（不设则跟随选中色）
                 .setSearchOpen(true)    // 显示搜索控件
                 .setMaxLevel(4)                   // 联动级数，设置只选到省市区/县街道
+                .setDefaultSelection(history) // 传入默认数据
                 .show(getSupportFragmentManager());
     }
 
