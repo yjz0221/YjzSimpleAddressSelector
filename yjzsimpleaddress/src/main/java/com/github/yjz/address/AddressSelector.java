@@ -503,12 +503,12 @@ public class AddressSelector extends BottomSheetDialogFragment {
                     tvEmpty.setVisibility(View.GONE);
                     recyclerView.setVisibility(View.VISIBLE);
 
-                    String codeToHighlight = null;
+                    AddressItem itemToHighlight = null;
                     int currentTabPosition = tabLayout.getSelectedTabPosition();
                     if (currentTabPosition >= 0 && currentTabPosition < selectedPath.size()) {
-                        codeToHighlight = selectedPath.get(currentTabPosition).code;
+                        itemToHighlight = selectedPath.get(currentTabPosition);
                     }
-                    adapter.setSelectedCode(codeToHighlight);
+                    adapter.setSelectedItem(itemToHighlight);
                 }
             }
 
@@ -571,7 +571,7 @@ public class AddressSelector extends BottomSheetDialogFragment {
 
         updateCurrentTab(item.name);
         selectedPath.add(item);
-        adapter.setSelectedCode(item.code);
+        adapter.setSelectedItem(item);
 
         if (listener != null) {
             listener.onItemSelect(item, currentTabPos);
@@ -660,10 +660,10 @@ public class AddressSelector extends BottomSheetDialogFragment {
     // ---------------- Internal Adapter ----------------
 
     private class InternalAdapter extends RecyclerView.Adapter<InternalAdapter.Holder> {
-        private String selectedCode = null;
+        private AddressItem selectedItem = null;
 
-        public void setSelectedCode(String code) {
-            this.selectedCode = code;
+        public void setSelectedItem(AddressItem item) {
+            this.selectedItem = item;
             notifyDataSetChanged();
         }
 
@@ -679,7 +679,16 @@ public class AddressSelector extends BottomSheetDialogFragment {
             AddressItem item = currentList.get(position);
             holder.tvName.setText(item.name);
 
-            boolean isSelected = selectedCode != null && selectedCode.equals(item.code);
+            // 同时比较 code 和 name，防止因 code 重复导致的高亮错误
+            boolean isSelected = false;
+            if (selectedItem != null) {
+                boolean codeSame = (selectedItem.code == null && item.code == null) ||
+                        (selectedItem.code != null && selectedItem.code.equals(item.code));
+                boolean nameSame = (selectedItem.name == null && item.name == null) ||
+                        (selectedItem.name != null && selectedItem.name.equals(item.name));
+
+                isSelected = codeSame && nameSame;
+            }
 
             if (isSelected) {
                 // 使用配置的选中颜色

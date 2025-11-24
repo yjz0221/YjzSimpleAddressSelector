@@ -2,4 +2,5 @@
 <resources>
     <string name="address_search_hint">搜索</string>
     <string name="address_max_level_error">配置错误：maxLevel 为 %d</string>
+    <string name="address_data_empty">暂无下级数据</string>
 </resources>
