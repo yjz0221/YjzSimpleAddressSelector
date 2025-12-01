@@ -1,0 +1,17 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <style name="YjzBottomDialogAnim" parent="@android:style/Animation.Dialog">
+        <item name="android:windowEnterAnimation">@anim/anim_slide_in_bottom</item>
+        <item name="android:windowExitAnimation">@anim/anim_slide_out_bottom</item>
+    </style>
+
+    <style name="CornerBottomSheet" parent="Widget.Design.BottomSheet.Modal">
+        <item name="android:background">@android:color/transparent</item>
+    </style>
+
+    <style name="BaseBottomSheetDialog" parent="Theme.Design.BottomSheetDialog">
+        <item name="android:windowAnimationStyle">@style/YjzBottomDialogAnim</item>
+        <item name="bottomSheetStyle">@style/CornerBottomSheet</item>
+    </style>
+
+</resources>

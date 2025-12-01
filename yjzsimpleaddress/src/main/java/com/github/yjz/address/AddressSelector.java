@@ -42,7 +42,7 @@ import java.util.List;
  * 创建日期：2025/11/21
  * 描述: 支持自定义样式的地址选择器
  */
-public class AddressSelector extends BottomSheetDialogFragment {
+public class AddressSelector extends BottomSheetDialogFragment{
 
     private TabLayout tabLayout;
     private RecyclerView recyclerView;
@@ -50,6 +50,7 @@ public class AddressSelector extends BottomSheetDialogFragment {
     private TextView tvTitle;
     private TextView tvEmpty;
     private EditText etSearch;
+    private View viewClose;
     private View searchContainer;
 
     private AddressProvider provider;
@@ -98,6 +99,7 @@ public class AddressSelector extends BottomSheetDialogFragment {
         fragment.listener = listener;
         return fragment;
     }
+
 
 
     // --- 开放给开发者的配置方法 (支持链式调用) ---
@@ -218,6 +220,13 @@ public class AddressSelector extends BottomSheetDialogFragment {
         return this;
     }
 
+
+    @Override
+    public void onCreate(@Nullable Bundle savedInstanceState) {
+        super.onCreate(savedInstanceState);
+        setStyle(STYLE_NORMAL, R.style.BaseBottomSheetDialog);
+    }
+
     @Nullable
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
@@ -235,7 +244,7 @@ public class AddressSelector extends BottomSheetDialogFragment {
         tvEmpty = view.findViewById(R.id.lib_tv_empty);
         searchContainer = view.findViewById(R.id.lib_fl_search_container);
         etSearch = view.findViewById(R.id.lib_et_search);
-
+        viewClose = view.findViewById(R.id.lib_iv_close);
 
         // 1. 应用自定义标题
         tvTitle.setText(titleText);
@@ -255,6 +264,9 @@ public class AddressSelector extends BottomSheetDialogFragment {
             @Override
             public void afterTextChanged(android.text.Editable s) {}
         });
+
+        // 右上角关闭按钮
+        viewClose.setOnClickListener(v -> dismiss());
 
         // 2. 应用自定义颜色到 TabLayout
         tabLayout.setSelectedTabIndicatorColor(selectedColor);
